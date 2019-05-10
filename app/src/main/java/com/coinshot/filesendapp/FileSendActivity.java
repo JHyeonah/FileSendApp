@@ -1,7 +1,9 @@
 package com.coinshot.filesendapp;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +17,7 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -22,28 +25,38 @@ import com.bumptech.glide.Glide;
 import com.coinshot.filesendapp.databinding.ActivityFilesendBinding;
 import com.gc.materialdesign.widgets.SnackBar;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class FileSendActivity extends AppCompatActivity {
     ActivityFilesendBinding bind;
+    private SQLiteDatabase db;
+    private UpdateDBHelper dbHelper;
 
     String currentPhotoPath = "";
+    String imgTitle = "";
+    String imgComment = "";
     Uri uri;
     String path = "/Pictures/FileSend/";
     String fileName = "";
     Bitmap sendedBitmap, thumbnail;
+    byte[] byteBitmap;
     int degree;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bind = DataBindingUtil.setContentView(this, R.layout.activity_filesend);
+
+        dbHelper = new UpdateDBHelper(this);
+        db = dbHelper.getWritableDatabase();
 
         Intent intent = getIntent();
         String flag = intent.getStringExtra("flag");
@@ -55,7 +68,7 @@ public class FileSendActivity extends AppCompatActivity {
             sendedBitmap = getPicture();
             degree = getDegree();
 
-            thumbnail = ThumbnailUtils.extractThumbnail(sendedBitmap, 200, 200 );
+            thumbnail = ThumbnailUtils.extractThumbnail(rotate(sendedBitmap, degree), 300, 300 );
             bind.sampleIv.setImageBitmap(rotate(sendedBitmap, degree));
 
         }else if(flag.equals("2")){
@@ -64,7 +77,7 @@ public class FileSendActivity extends AppCompatActivity {
             sendedBitmap = getBitmapGallery(uri);
             degree = getDegreeGallery(uri);
 
-            thumbnail = ThumbnailUtils.extractThumbnail(sendedBitmap, 200, 200 );
+            thumbnail = ThumbnailUtils.extractThumbnail(rotate(sendedBitmap, degree), 300, 300 );
             bind.sampleIv.setImageBitmap(rotate(sendedBitmap, degree));
 
         }
@@ -79,9 +92,16 @@ public class FileSendActivity extends AppCompatActivity {
         bind.uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String timeNow = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                imgTitle = bind.titleEt.getText().toString();
+                imgComment = bind.commentEt.getText().toString();
+
+                Log.d("PICTURE", "타이틀 : " + imgTitle + ",  코멘트 : " + imgComment + ",  시간 : " + timeNow);
+
                 saveThumbnail(thumbnail, fileName);
 
-               Toast.makeText(getApplicationContext(), "업로드 완료", Toast.LENGTH_SHORT).show();
+                //db.execSQL("insert into picture values(null, '" + fileName + "',DATETIME('" + timeNow + "'), '" + imgTitle + "','" + imgComment + "'  );");
+                Toast.makeText(getApplicationContext(), "업로드 완료", Toast.LENGTH_SHORT).show();
 
                 finish();
             }
@@ -182,6 +202,7 @@ public class FileSendActivity extends AppCompatActivity {
 
     private void saveThumbnail(Bitmap bitmap, String filename){
 
+        Bitmap toByte = bitmap;
         if(filename.equals("")){
             filename = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".png";
         }
@@ -189,12 +210,19 @@ public class FileSendActivity extends AppCompatActivity {
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
             File file = new File(Environment.getExternalStorageDirectory().getPath() + "/Pictures/FileSend/" + filename);
             OutputStream out = null;
+
             try{
+                // 파일을 기기에 저장
                 file.createNewFile();
                 out = new FileOutputStream(file);
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-
                 out.close();
+
+                // bitmap을 byteArray로
+                final int i = bitmap.getByteCount();
+                ByteBuffer byteBuffer = ByteBuffer.allocate(i);
+                toByte.copyPixelsToBuffer(byteBuffer);
+                byteBitmap = byteBuffer.array();
 
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory().getPath() + "/Pictures/FileSend/" + filename)));
             }catch(Exception e){
