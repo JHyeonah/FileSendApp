@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"
+        android:padding="30dp"
+        android:layout_gravity="center">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true">
+            <ImageView
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:src ="@drawable/cloud_back"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/upload"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/upload"
+                android:layout_centerHorizontal="true"
+                android:text="이미지 업로드"
+                android:textSize="20sp"
+                android:id="@+id/uploadText"/>
+
+            <ImageView
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:src="@drawable/crop_back"
+                android:layout_below="@+id/uploadText"
+                android:layout_marginTop="60dp"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/album"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/album"
+                android:layout_centerHorizontal="true"
+                android:text="사진 앨범"
+                android:textSize="20sp"
+                android:id="@+id/albumText"/>
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+</layout>
