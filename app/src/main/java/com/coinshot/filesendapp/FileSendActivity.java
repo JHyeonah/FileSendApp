@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -100,7 +101,17 @@ public class FileSendActivity extends AppCompatActivity {
 
                 saveThumbnail(thumbnail, fileName);
 
-                //db.execSQL("insert into picture values(null, '" + fileName + "',DATETIME('" + timeNow + "'), '" + imgTitle + "','" + imgComment + "'  );");
+                SQLiteStatement st = db.compileStatement("insert into picture(id, filename, time, thumbnail, title, comment) values(?, ?, ?, ?, ?, ?)");
+
+                st.bindNull(1);
+                st.bindString(2, fileName);
+                st.bindString(3, timeNow);
+                st.bindBlob(4, byteBitmap);
+                st.bindString(5, imgTitle);
+                st.bindString(6, imgComment);
+                st.execute();
+
+
                 Toast.makeText(getApplicationContext(), "업로드 완료", Toast.LENGTH_SHORT).show();
 
                 finish();

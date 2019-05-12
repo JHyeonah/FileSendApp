@@ -18,7 +18,7 @@ public class UpdateDBHelper extends SQLiteOpenHelper {
         String sql = "CREATE TABLE picture" +
                 "(id Integer primary key autoincrement, " +
                 "filename text not null," +
-                "time datetime not null," +
+                "time text not null," +
                 "thumbnail bolb not null," +
                 "title text," +
                 "comment text);";
