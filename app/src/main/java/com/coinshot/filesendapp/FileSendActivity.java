@@ -54,7 +54,7 @@ public class FileSendActivity extends AppCompatActivity {
     String path = "/Pictures/FileSend/";
     String fileName = "";
     String serverName = "";
-    Bitmap sendedBitmap, thumbnail;
+    Bitmap sendedBitmap, newBitmap, thumbnail;
     File sendFile;
     byte[] byteBitmap;
     int degree;
@@ -90,6 +90,7 @@ public class FileSendActivity extends AppCompatActivity {
             sendedBitmap = getPicture();
             degree = getDegree();
 
+            newBitmap = rotate(sendedBitmap, degree);
             makeFile(fileName);
 
             thumbnail = ThumbnailUtils.extractThumbnail(rotate(sendedBitmap, degree), 300, 300 );
@@ -102,10 +103,11 @@ public class FileSendActivity extends AppCompatActivity {
             sendedBitmap = getBitmapGallery(uri);
             degree = getDegreeGallery(uri);
 
+            newBitmap = rotate(sendedBitmap, degree);
             makeFile(fileName);
 
             thumbnail = ThumbnailUtils.extractThumbnail(rotate(sendedBitmap, degree), 300, 300 );
-            bind.sampleIv.setImageBitmap(rotate(sendedBitmap, degree));
+            bind.sampleIv.setImageBitmap(newBitmap);
 
         }
 
@@ -268,7 +270,7 @@ public class FileSendActivity extends AppCompatActivity {
     private void makeFile(String name){
         sendFile = new File(getApplicationContext().getCacheDir(), name);
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        sendedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, bos);
+        newBitmap.compress(Bitmap.CompressFormat.JPEG, 50, bos);
         byte[] bitmapData = bos.toByteArray();
 
         try{
