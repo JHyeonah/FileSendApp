@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 이미지 파일 이름 생성
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        imageCaptureName = timeStamp + ".png";
+        imageCaptureName = timeStamp + ".jpeg";
 
         File storageDir = new File(Environment.getExternalStorageDirectory().getAbsoluteFile() + "/Pictures/FileSend/" + imageCaptureName);
         currentPhotoPath = storageDir.getAbsolutePath();

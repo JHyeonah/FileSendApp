@@ -1,6 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="50dp"
+            android:id="@+id/swipeLayout">
 
-</android.support.constraint.ConstraintLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="제목 "
+                android:layout_marginLeft="30dp"
+                android:id="@+id/titleText"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="업로드 시각 "
+                android:layout_below="@+id/titleText"
+                android:id="@+id/timeText"
+                android:layout_alignStart="@+id/titleText"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="코멘트 "
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/timeText"
+                android:layout_alignStart="@+id/titleText"
+                android:id="@+id/commentText"
+                android:layout_marginBottom="50dp"/>
+
+            <com.github.chrisbanes.photoview.PhotoView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/photoView"
+                android:layout_below="@+id/commentText"/>
+        </RelativeLayout>
+    </ScrollView>
+
+</layout>

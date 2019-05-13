@@ -19,7 +19,7 @@ public class UpdateDBHelper extends SQLiteOpenHelper {
                 "(id Integer primary key autoincrement, " +
                 "filename text not null," +
                 "time text not null," +
-                "thumbnail bolb not null," +
+                "thumbnail text not null," +
                 "title text," +
                 "comment text);";
 
