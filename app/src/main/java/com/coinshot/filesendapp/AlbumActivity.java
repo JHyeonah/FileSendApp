@@ -1,5 +1,6 @@
 package com.coinshot.filesendapp;
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
@@ -9,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -31,8 +33,10 @@ public class AlbumActivity extends AppCompatActivity {
     ArrayList<Album> itemList;
     AlbumAdapter adapter;
     int count;
-    int limit = 6;
+    int limit;
     int offset;
+
+    final int ROW = 3;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,15 +48,27 @@ public class AlbumActivity extends AppCompatActivity {
         data = new ArrayList<>();
         itemList = new ArrayList<>();
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
-
         adapter = new AlbumAdapter(this,data);
         bind.albumRecycler.setAdapter(adapter);
         bind.albumRecycler.addOnScrollListener(recyclerOnScrollListener);
-        bind.albumRecycler.setLayoutManager(gridLayoutManager);
+        bind.albumRecycler.setLayoutManager(new GridLayoutManager(this, ROW));
 
+        // RecyclerView 내의 ImageView 높이
+        SharedPreferences sp = getSharedPreferences("sp", MODE_PRIVATE);
+        float imgHeight = sp.getFloat("height", 0f);
+
+        // 화면 높이
+        DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
+        float screenHeight = dm.heightPixels * 1.5f;
+
+        // 화면과 이미지 사이즈로 limit 개수 구하기
+        int col = (int)(screenHeight / 355.0);
+        Log.d("PICTURE", "col : " + String.valueOf(col));
+
+        limit = col * ROW;
         offset = 0;
 
+        // 모든 데이터 개수
         String sql = "select * from picture";
         Cursor cursor = db.rawQuery(sql, null);
         count = cursor.getCount();
@@ -60,21 +76,12 @@ public class AlbumActivity extends AppCompatActivity {
 
         getData(limit, offset);
 
-/*
-        for(int i =0; i< max; i++){
-            Log.d("PICTURE", String.valueOf(data.get(i).getNum()));
-        }
-
-        if(max < PAGE){
-            for(int i=0; i<max; i++){
-                itemList.add(data.get(i));
+        bind.albumRecycler.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("PICTURE", "height: " + bind.albumRecycler.getHeight());
             }
-        }else{
-            for(int i=0; i<PAGE; i++){
-                itemList.add(data.get(i));
-            }
-        }
-*/
+        });
 
     }
 
@@ -93,44 +100,8 @@ public class AlbumActivity extends AppCompatActivity {
                     getData(limit, offset);
 
                     adapter.notifyItemInserted(offset);
+                    Log.d("PICTURE", "offset : " + String.valueOf(offset));
                 }
-                /*
-                int start = adapter.getItemCount();
-                Log.d("PICTURE", "start : " + String.valueOf(start));
-                Log.d("PICTURE", "max :  " + String.valueOf(max));
-                int end = start+PAGE-1;
-                Log.d("PICTURE", "end : " + String.valueOf(end));
-
-                if(start >= max-1){
-                    Toast.makeText(getApplicationContext(), "목록의 끝입니다", Toast.LENGTH_SHORT).show();
-                }else if(end >= max){
-                    for(int i = start; i < max; i++){
-                        itemList.add(data.get(i));
-                        //itemList.clear();
-                        //itemList.addAll(tempoList);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                adapter.notifyDataSetChanged();
-                            }
-                        });
-
-                    }
-                }else{
-                    for(int i = start; i <= end; i++) {
-                        itemList.add(data.get(i));
-                        //itemList.clear();
-                        //itemList.addAll(tempoList);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                adapter.notifyDataSetChanged();
-                            }
-                        });
-                    }
-                }
-*/
-
             }
         }
 
@@ -140,12 +111,6 @@ public class AlbumActivity extends AppCompatActivity {
         }
     };
 
-    private final static Comparator<Album> myComparator = new Comparator<Album>() {
-        @Override
-        public int compare(Album o1, Album o2) {
-            return o2.getNum()-o1.getNum();
-        }
-    };
 
     public void getData(int limit, int offset){
         String sql = "select * from picture order by id desc limit " + limit + " offset " + offset + ";";

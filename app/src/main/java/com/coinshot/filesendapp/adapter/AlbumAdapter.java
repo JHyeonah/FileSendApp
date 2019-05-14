@@ -2,8 +2,10 @@ package com.coinshot.filesendapp.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> {
     private Context context;
     private ArrayList<Album> list;
+    private float height;
 
     public AlbumAdapter(Context context, ArrayList<Album> list){
         this.list = list;
@@ -30,14 +33,15 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_album, viewGroup, false);
-        ViewHolder viewHolder = new ViewHolder(itemView);
+        final ViewHolder viewHolder = new ViewHolder(itemView);
+
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull AlbumAdapter.ViewHolder holder, final int position) {
         final Album item = list.get(position);
-        ViewHolder holders = (ViewHolder)holder;
+        final ViewHolder holders = (ViewHolder)holder;
 
         Glide.with(context)
                 .asBitmap()
@@ -51,6 +55,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
                 intent.putExtra("fileName", item.getFileName());
                 intent.putExtra("list", list);
                 intent.putExtra("position", position);
+
                 context.startActivity(intent);
             }
         });
@@ -69,6 +74,19 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
             super(itemView);
 
             albumImg = itemView.findViewById(R.id.albumImg);
+
+            albumImg.post(new Runnable() {
+                @Override
+                public void run() {
+                    height = albumImg.getHeight();
+                }
+            });
+
+            SharedPreferences sp = context.getSharedPreferences("sp", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putFloat("height", height);
+
+            editor.apply();
         }
     }
 }

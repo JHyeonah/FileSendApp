@@ -146,7 +146,10 @@ public class FileSendActivity extends AppCompatActivity {
 
     // 찍은 사진 비트맵 가져오기
     private Bitmap getPicture(){
-        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 2;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, options);
 
         return bitmap;
     }
@@ -191,7 +194,11 @@ public class FileSendActivity extends AppCompatActivity {
     // 갤러리 사진 비트맵
     private Bitmap getBitmapGallery(Uri uri){
         String imgPath = getRealPathFromURI(uri);
-        Bitmap bitmap = BitmapFactory.decodeFile(imgPath);
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 2;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(imgPath, options);
 
         return bitmap;
     }
@@ -310,7 +317,6 @@ public class FileSendActivity extends AppCompatActivity {
                         st.bindString(6, imgComment);
                         st.execute();
 
-                       // Log.d("PICTURE", "uri : " + getRealPathFromURI(uri));
                     }else{
                         Log.d("PICTURE", "response success is false");
                     }
