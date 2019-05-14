@@ -30,9 +30,9 @@ public class AlbumActivity extends AppCompatActivity {
     ArrayList<Album> data;
     ArrayList<Album> itemList;
     AlbumAdapter adapter;
-    int start = 0;
-    int max = 0;
-    final int PAGE = 4;
+    int count;
+    int limit = 6;
+    int offset;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,23 +44,23 @@ public class AlbumActivity extends AppCompatActivity {
         data = new ArrayList<>();
         itemList = new ArrayList<>();
 
-        String sql = "select * from picture;";
-        Cursor results = db.rawQuery(sql, null);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
 
-        results.moveToFirst();
-        while(!results.isAfterLast()){
-            String num = String.valueOf(results.getInt(0));
-            Album album = new Album(results.getInt(0), results.getString(3), results.getString(1), results.getString(4), results.getString(5), results.getString(2));
-            data.add(album);
-            Collections.sort(data, myComparator);
+        adapter = new AlbumAdapter(this,data);
+        bind.albumRecycler.setAdapter(adapter);
+        bind.albumRecycler.addOnScrollListener(recyclerOnScrollListener);
+        bind.albumRecycler.setLayoutManager(gridLayoutManager);
 
-            results.moveToNext();
-        }
-        results.close();
-        Collections.sort(data, myComparator);
+        offset = 0;
 
-        max = data.size();
+        String sql = "select * from picture";
+        Cursor cursor = db.rawQuery(sql, null);
+        count = cursor.getCount();
+        cursor.close();
 
+        getData(limit, offset);
+
+/*
         for(int i =0; i< max; i++){
             Log.d("PICTURE", String.valueOf(data.get(i).getNum()));
         }
@@ -74,35 +74,27 @@ public class AlbumActivity extends AppCompatActivity {
                 itemList.add(data.get(i));
             }
         }
-
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
-
-
-        bind.albumRecycler.addOnScrollListener(recyclerOnScrollListener);
-        bind.albumRecycler.setLayoutManager(gridLayoutManager);
-        adapter = new AlbumAdapter(getApplicationContext(),itemList);
-        bind.albumRecycler.setAdapter(adapter);
-
-    }
-/*
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Collections.sort(data);
-        Collections.sort(itemList);
-        adapter.notifyDataSetChanged();
-    }
 */
+
+    }
+
     private RecyclerView.OnScrollListener recyclerOnScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
-            ArrayList<Album> tempoList = new ArrayList<>();
-            tempoList.clear();
-            tempoList.addAll(itemList);
 
             if(!bind.albumRecycler.canScrollVertically(1)){
                 // 스크롤이 바닥까지 내려왔을 때
+
+                if(offset >= count){
+                    Toast.makeText(getApplicationContext(), "목록의 끝입니다", Toast.LENGTH_SHORT).show();
+                }else{
+                    offset += limit;
+                    getData(limit, offset);
+
+                    adapter.notifyItemInserted(offset);
+                }
+                /*
                 int start = adapter.getItemCount();
                 Log.d("PICTURE", "start : " + String.valueOf(start));
                 Log.d("PICTURE", "max :  " + String.valueOf(max));
@@ -113,20 +105,31 @@ public class AlbumActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "목록의 끝입니다", Toast.LENGTH_SHORT).show();
                 }else if(end >= max){
                     for(int i = start; i < max; i++){
-                        tempoList.add(data.get(i));
-                        itemList.clear();
-                        itemList.addAll(tempoList);
-                        adapter.notifyDataSetChanged();
+                        itemList.add(data.get(i));
+                        //itemList.clear();
+                        //itemList.addAll(tempoList);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
+
                     }
                 }else{
                     for(int i = start; i <= end; i++) {
-                        tempoList.add(data.get(i));
-                        itemList.clear();
-                        itemList.addAll(tempoList);
-                        adapter.notifyDataSetChanged();
+                        itemList.add(data.get(i));
+                        //itemList.clear();
+                        //itemList.addAll(tempoList);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                adapter.notifyDataSetChanged();
+                            }
+                        });
                     }
                 }
-
+*/
 
             }
         }
@@ -143,4 +146,21 @@ public class AlbumActivity extends AppCompatActivity {
             return o2.getNum()-o1.getNum();
         }
     };
+
+    public void getData(int limit, int offset){
+        String sql = "select * from picture order by id desc limit " + limit + " offset " + offset + ";";
+        Cursor results = db.rawQuery(sql, null);
+
+        results.moveToFirst();
+
+        while(!results.isAfterLast()){
+            String num = String.valueOf(results.getInt(0));
+            Album album = new Album(results.getInt(0), results.getString(3), results.getString(1), results.getString(4), results.getString(5), results.getString(2));
+            data.add(album);
+
+            results.moveToNext();
+        }
+        results.close();
+
+    }
 }
