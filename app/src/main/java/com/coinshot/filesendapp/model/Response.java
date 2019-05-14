@@ -1,8 +1,8 @@
-package com.coinshot.filesendapp;
+package com.coinshot.filesendapp.model;
 
 public class Response {
-    boolean success;
-    String fileName;
+    public boolean success;
+    public String fileName;
 
     public Response(boolean success, String fileName){
         this.success = success;

@@ -1,4 +1,4 @@
-package com.coinshot.filesendapp;
+package com.coinshot.filesendapp.activity;
 
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.coinshot.filesendapp.R;
+import com.coinshot.filesendapp.UpdateDBHelper;
 import com.coinshot.filesendapp.adapter.AlbumAdapter;
 import com.coinshot.filesendapp.model.Album;
 import com.coinshot.filesendapp.databinding.ActivityAlbumBinding;

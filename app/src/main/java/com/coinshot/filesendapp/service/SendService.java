@@ -1,6 +1,6 @@
 package com.coinshot.filesendapp.service;
 
-import com.coinshot.filesendapp.Response;
+import com.coinshot.filesendapp.model.Response;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;

@@ -1,4 +1,4 @@
-package com.coinshot.filesendapp;
+package com.coinshot.filesendapp.activity;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -20,6 +20,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.coinshot.filesendapp.R;
+import com.coinshot.filesendapp.model.Response;
+import com.coinshot.filesendapp.UpdateDBHelper;
 import com.coinshot.filesendapp.databinding.ActivityFilesendBinding;
 import com.coinshot.filesendapp.service.SendService;
 

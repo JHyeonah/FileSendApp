@@ -5,14 +5,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.coinshot.filesendapp.DetailActivity;
+import com.coinshot.filesendapp.activity.DetailActivity;
 import com.coinshot.filesendapp.R;
 import com.coinshot.filesendapp.model.Album;
 

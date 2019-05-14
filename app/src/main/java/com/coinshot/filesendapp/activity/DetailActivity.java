@@ -1,4 +1,4 @@
-package com.coinshot.filesendapp;
+package com.coinshot.filesendapp.activity;
 
 import android.app.AlertDialog;
 import android.app.DownloadManager;
@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,32 +15,15 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.coinshot.filesendapp.R;
 import com.coinshot.filesendapp.databinding.ActivityDetailBinding;
 import com.coinshot.filesendapp.model.Album;
-import com.coinshot.filesendapp.service.SendService;
-import com.gc.materialdesign.widgets.ProgressDialog;
-import com.github.chrisbanes.photoview.PhotoView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DetailActivity extends AppCompatActivity {
     ActivityDetailBinding bind;

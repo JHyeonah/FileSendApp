@@ -1,22 +1,15 @@
-package com.coinshot.filesendapp;
+package com.coinshot.filesendapp.activity;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.renderscript.ScriptGroup;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -25,9 +18,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 
+import com.coinshot.filesendapp.R;
 import com.coinshot.filesendapp.databinding.ActivityMainBinding;
 
 import java.io.File;
